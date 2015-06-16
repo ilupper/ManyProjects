@@ -16,7 +16,8 @@ import java.util.StringTokenizer;
 public class GenericColumn {
 
 	ArrayList<String> schema = new ArrayList<String>(), list;
-	ArrayList<Person> personList = new ArrayList<Person>();
+	//ArrayList<Person> personList = new ArrayList<Person>();
+	ArrayList<Object> objectList = new ArrayList<Object>();
 
 	public void populateDAO(ArrayList<String> list, Object obj) {
 	
@@ -38,10 +39,10 @@ public class GenericColumn {
 						//loop thru methods
 						if (methodField.contains( tempField ) && methodField.startsWith("set"))
 							try {
-								/* //debug
+								//debug
 								System.out.println("Method found and executing.. " + m.getName());
 								System.out.println("Field found and executing.. " + f.getName());
-								*/
+								
 								m.invoke(obj, list.get(i));
 							} catch (IllegalAccessException e) {
 								e.printStackTrace();
@@ -84,6 +85,31 @@ public class GenericColumn {
 			e.printStackTrace();
 		}
 		
+
+		//Person temp = null; //Debug code
+		
+		//put the data to a set from a arraylist
+		HashSet<Person> hs = new HashSet<Person>();
+		for (Object obj: objectList) {
+			System.out.println("Person first name is " + ((Person)obj).getFirst());
+			System.out.println("Person last name is " + ((Person)obj).getLast());
+			System.out.println("Person id is " + ((Person)obj).getId());
+			hs.add((Person)obj);
+			/*	Debug code **
+			 * if (temp == null)
+				temp=person;
+			else {
+				System.out.println("falsity? " + temp.equals(person));
+			}
+			*/
+		}
+
+		//print out the results: should be unique
+		Iterator<Person> iterator = hs.iterator();
+		while (iterator.hasNext()) {
+			Person p = (Person)iterator.next();
+			System.out.println("Name is " + p.getFirst());
+		}	
 	}
 
 	public static void main(String[] args) {
@@ -108,9 +134,22 @@ public class GenericColumn {
 		while (st.hasMoreTokens())
 			this.list.add(st.nextToken().trim());
 
-		Person person = new Person();
-		populateDAO(list, person);
-		personList.add(person);
+		Class objectClass = null;
+		try {
+			objectClass = Class.forName("com.ilupper.util.Person");
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		Object object = null;
+		try {
+			object = objectClass.newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		populateDAO(list, object);
+		objectList.add(object);
 	}
 
 	public void setFileInfo(String filename) {
