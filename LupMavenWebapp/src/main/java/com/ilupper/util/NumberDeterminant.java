@@ -2,7 +2,7 @@ package com.ilupper.util;
 
 public class NumberDeterminant {
 	
-	public boolean isInteger(String possibleNum) {
+	public static boolean isInteger(String possibleNum) {
 		try {
 			new Integer(possibleNum);
 			return true;
@@ -11,4 +11,13 @@ public class NumberDeterminant {
 			return false;
 		}
 	}
+	
+    public static Integer convertToInteger(String numInString) {
+        try {
+            return new Integer(numInString);
+        }
+        catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
 }
