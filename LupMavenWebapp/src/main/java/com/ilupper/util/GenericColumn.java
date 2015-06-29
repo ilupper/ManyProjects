@@ -1,4 +1,4 @@
-package com.ilupper.util;
+package com.accenture.dojo.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,19 +10,71 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 public class GenericColumn {
 
 	ArrayList<String> schema = new ArrayList<String>(), list;
-	//ArrayList<Person> personList = new ArrayList<Person>();
 	ArrayList<Object> objectList = new ArrayList<Object>();
+
+	HashSet<Object> hs = new HashSet<Object>();
+    
+    public GenericColumn(String filename, String dtoName) {
+
+        this.setFileInfo(filename);
+
+        // the schema
+        try {
+            this.setUpColumns(br.readLine());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        //the model
+        Class<?> objectClass = null;
+        try {
+            objectClass = Class.forName(dtoName);
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        
+        // the content
+        try {
+            String line = null;
+            do {
+                line = br.readLine();
+                if (line != null)
+                    this.matchDataToColumns(line, objectClass);
+            } while (line != null);
+
+            this.closeFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        //put the data to a set from a arraylist
+        for (Object obj: objectList) {
+            hs.add(obj);
+        }
+  
+    }
+    
+    TreeSet<Object> treeSet = null;
+    public void sortData(HashSet<Object> hashSet) {
+        treeSet = new TreeSet<Object>(hashSet);       
+    }
+
+    public static void main(String[] args) {
+        new GenericColumn("Person.txt", "com.accenture.dojo.orgchart.Person");
+    }
 
 	public void populateDAO(ArrayList<String> list, Object obj) {
 	
 		//attempt to use reflection on Person to automate fields
-		Class genericClass = obj.getClass();
+		Class<?> genericClass = obj.getClass();
 		Field[] fieldList = genericClass.getFields();
 		Method[] methodList = genericClass.getMethods();
 		
@@ -43,7 +95,11 @@ public class GenericColumn {
 								System.out.println("Method found and executing.. " + m.getName());
 								System.out.println("Field found and executing.. " + f.getName());
 								
-								m.invoke(obj, list.get(i));
+								String holding = list.get(i);
+								if (NumberDeterminant.isInteger(holding))
+								    m.invoke(obj, NumberDeterminant.convertToInteger(holding));
+								else
+								    m.invoke(obj, holding);
 							} catch (IllegalAccessException e) {
 								e.printStackTrace();
 							} catch (IllegalArgumentException e) {
@@ -57,65 +113,6 @@ public class GenericColumn {
 		
 	}
 
-	public GenericColumn() {
-
-		//this.setFileInfo("importFile_mini.txt");
-		this.setFileInfo("importFile.txt");
-
-		// the schema
-		try {
-			this.setUpColumns(br.readLine());
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		// the content
-		try {
-			String line = null;
-			do {
-				line = br.readLine();
-				if (line != null)
-					this.matchDataToColumns(line);
-			} while (line != null);
-
-			this.closeFile();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-
-		//Person temp = null; //Debug code
-		
-		//put the data to a set from a arraylist
-		HashSet<Person> hs = new HashSet<Person>();
-		for (Object obj: objectList) {
-			System.out.println("Person first name is " + ((Person)obj).getFirst());
-			System.out.println("Person last name is " + ((Person)obj).getLast());
-			System.out.println("Person id is " + ((Person)obj).getId());
-			hs.add((Person)obj);
-			/*	Debug code **
-			 * if (temp == null)
-				temp=person;
-			else {
-				System.out.println("falsity? " + temp.equals(person));
-			}
-			*/
-		}
-
-		//print out the results: should be unique
-		Iterator<Person> iterator = hs.iterator();
-		while (iterator.hasNext()) {
-			Person p = (Person)iterator.next();
-			System.out.println("Name is " + p.getFirst());
-		}	
-	}
-
-	public static void main(String[] args) {
-		new GenericColumn();
-	}
-
 	public void setUpColumns(String heading) {
 
 		StringTokenizer st = new StringTokenizer(heading, ",");
@@ -126,7 +123,7 @@ public class GenericColumn {
 	FileReader fr = null;
 	BufferedReader br;
 
-	public void matchDataToColumns(String row) {
+	public void matchDataToColumns(String row, Class<?> objectClass) {
 
 		list = new ArrayList<String>();
 
@@ -134,12 +131,6 @@ public class GenericColumn {
 		while (st.hasMoreTokens())
 			this.list.add(st.nextToken().trim());
 
-		Class objectClass = null;
-		try {
-			objectClass = Class.forName("com.ilupper.util.Person");
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		}
 		Object object = null;
 		try {
 			object = objectClass.newInstance();
@@ -158,7 +149,6 @@ public class GenericColumn {
 		try {
 			fr = new FileReader(file);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		br = new BufferedReader(fr);
@@ -171,4 +161,28 @@ public class GenericColumn {
 			e.printStackTrace();
 		}
 	}
+
+    
+    public HashSet<Object> getHs() {
+    
+        return hs;
+    }
+
+    
+    public void setHs(HashSet<Object> hs) {
+    
+        this.hs = hs;
+    }
+
+    
+    public TreeSet<Object> getTreeSet() {
+    
+        return treeSet;
+    }
+
+    
+    public void setTreeSet(TreeSet<Object> treeSet) {
+    
+        this.treeSet = treeSet;
+    }
 }
