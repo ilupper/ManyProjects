@@ -18,7 +18,7 @@ public class GenericColumn {
 	ArrayList<String> schema = new ArrayList<String>(), list;
 	ArrayList<Object> objectList = new ArrayList<Object>();
 
-	HashSet<Object> hs = new HashSet<Object>();
+	HashSet<Object> uniqueItems = new HashSet<Object>();
     
     public GenericColumn(String filename, String dtoName) {
 
@@ -57,28 +57,28 @@ public class GenericColumn {
         
         //put the data to a set from a arraylist
         for (Object obj: objectList) {
-            hs.add(obj);
+            uniqueItems.add(obj);
         }
   
     }
     
-    TreeSet<Object> treeSet = null;
+    TreeSet<Object> sortedItems = null;
     public void sortData(HashSet<Object> hashSet) {
-        treeSet = new TreeSet<Object>(hashSet);       
+        sortedItems = new TreeSet<Object>(hashSet);       
     }
 
     public static void main(String[] args) {
         new GenericColumn("Person.txt", "com.accenture.dojo.orgchart.Person");
     }
 
-	public void populateDAO(ArrayList<String> list, Object obj) {
+	public void populateDAO(ArrayList<String> data, Object obj) {
 	
 		//attempt to use reflection on Person to automate fields
 		Class<?> genericClass = obj.getClass();
 		Field[] fieldList = genericClass.getFields();
 		Method[] methodList = genericClass.getMethods();
 		
-		for (int i=0; i < list.size(); i++) {
+		for (int i=0; i < data.size(); i++) {
 			String match = schema.get(i);
 			for (Field f: fieldList) {
 				if (match.equalsIgnoreCase(f.getName()))
@@ -95,7 +95,7 @@ public class GenericColumn {
 								System.out.println("Method found and executing.. " + m.getName());
 								System.out.println("Field found and executing.. " + f.getName());
 								
-								String holding = list.get(i);
+								String holding = data.get(i);
 								if (NumberDeterminant.isInteger(holding))
 								    m.invoke(obj, NumberDeterminant.convertToInteger(holding));
 								else
@@ -163,26 +163,26 @@ public class GenericColumn {
 	}
 
     
-    public HashSet<Object> getHs() {
+    public HashSet<Object> getUniqueItems() {
     
-        return hs;
+        return uniqueItems;
     }
 
     
-    public void setHs(HashSet<Object> hs) {
+    public void setUniqueItems(HashSet<Object> hs) {
     
-        this.hs = hs;
+        this.uniqueItems = hs;
     }
 
     
-    public TreeSet<Object> getTreeSet() {
+    public TreeSet<Object> getSortedItems() {
     
-        return treeSet;
+        return sortedItems;
     }
 
     
-    public void setTreeSet(TreeSet<Object> treeSet) {
+    public void setSortedItems(TreeSet<Object> treeSet) {
     
-        this.treeSet = treeSet;
+        this.sortedItems = treeSet;
     }
 }
