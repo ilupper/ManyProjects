@@ -54,12 +54,7 @@ public class GenericColumn {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        //put the data to a set from a arraylist
-        for (Object obj: objectList) {
-            uniqueItems.add(obj);
-        }
-  
+          
     }
     
     TreeSet<Object> sortedItems = null;
@@ -165,6 +160,9 @@ public class GenericColumn {
     
     public HashSet<Object> getUniqueItems() {
     
+        for (Object obj: objectList) {
+            uniqueItems.add(obj);
+        }
         return uniqueItems;
     }
 
@@ -176,7 +174,8 @@ public class GenericColumn {
 
     
     public TreeSet<Object> getSortedItems() {
-    
+        
+        this.sortData(uniqueItems);
         return sortedItems;
     }
 
