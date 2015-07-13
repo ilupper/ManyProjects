@@ -1,17 +1,18 @@
 package com.ilupper.util;
 
-public class NumberDeterminant {
-	
-	public static boolean isInteger(String possibleNum) {
-		try {
-			new Integer(possibleNum);
-			return true;
-		}
-		catch (NumberFormatException nfe) {
-			return false;
-		}
-	}
-	
+
+public class TypeDeterminant {
+    
+    public static boolean isInteger(String possibleNum) {
+        try {
+            new Integer(possibleNum);
+            return true;
+        }
+        catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+    
     public static Integer convertToInteger(String numInString) {
         try {
             return new Integer(numInString);
