@@ -8,10 +8,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+
+import com.accenture.dojo.experiment.PersonFunction;
+import com.accenture.dojo.orgchart.Person;
+import com.accenture.dojo.orgchart.PersonnelIDComparator;
 
 public class GenericColumn {
 
@@ -56,11 +62,6 @@ public class GenericColumn {
         }
           
     }
-    
-    TreeSet<Object> sortedItems = null;
-    public void sortData(HashSet<Object> hashSet) {
-        sortedItems = new TreeSet<Object>(hashSet);       
-    }
 
     public static void main(String[] args) {
         new GenericColumn("Person.txt", "com.accenture.dojo.orgchart.Person");
@@ -90,9 +91,13 @@ public class GenericColumn {
 								System.out.println("Method found and executing.. " + m.getName());
 								System.out.println("Field found and executing.. " + f.getName());
 								
+								LocalDate ld = null;
 								String holding = data.get(i);
-								if (NumberDeterminant.isInteger(holding))
-								    m.invoke(obj, NumberDeterminant.convertToInteger(holding));
+								if (TypeDeterminant.isInteger(holding))
+								    m.invoke(obj, TypeDeterminant.convertToInteger(holding));
+								else if ( (ld = TypeDeterminant.convertToLocalDate(holding)) != null) {
+								    m.invoke(obj, ld);
+								}
 								else
 								    m.invoke(obj, holding);
 							} catch (IllegalAccessException e) {
@@ -172,6 +177,10 @@ public class GenericColumn {
         this.uniqueItems = hs;
     }
 
+    public void setSortedItems(TreeSet<Object> treeSet) {
+        
+        this.sortedItems = treeSet;
+    }
     
     public TreeSet<Object> getSortedItems() {
         
@@ -179,9 +188,48 @@ public class GenericColumn {
         return sortedItems;
     }
 
+    TreeSet<Object> sortedItems = null;
+    public void sortData(HashSet<Object> hashSet) {
+        sortedItems = new TreeSet<Object>(hashSet);       
+    }
     
-    public void setSortedItems(TreeSet<Object> treeSet) {
+    public TreeSet<Object> getSortedItems2(Comparator<? extends Object> comparator) {
+        
+        @SuppressWarnings("unchecked")
+        Comparator<Object> comparator2 = (Comparator<Object>)comparator;
+        Comparator<Object> reversed = comparator2.reversed();
+        
+        Comparator<? extends Object> temp = new PersonnelIDComparator();
+        @SuppressWarnings("unchecked")
+        Comparator<Object> pidc = (Comparator<Object>)temp;
+        Comparator<Object> multi = reversed.thenComparing( pidc );
+        
+        sortedItems = new TreeSet<Object>(multi);     
+        sortedItems.addAll(uniqueItems);
+        return sortedItems;
+    }
     
-        this.sortedItems = treeSet;
+    public TreeSet<Object> getSortedItemsViaFunction() {
+        
+        //testing functions in java 8
+        Comparator<Object> multi = null;
+        multi = Comparator.comparing(new PersonFunction()); //probably not how it's done
+        
+        sortedItems = new TreeSet<Object>(multi);     
+        sortedItems.addAll(uniqueItems);
+        return sortedItems;
+    }
+
+    public TreeSet<Object> getSortedItemsViaMethodRef() {
+        
+        //testing functions in java 8
+        Comparator<? extends Object> temp = null;
+        temp = Comparator.comparing(Person::getFirstName);
+        @SuppressWarnings("unchecked")
+        Comparator<Object> multi = (Comparator<Object>)temp;
+        
+        sortedItems = new TreeSet<Object>(multi);     
+        sortedItems.addAll(uniqueItems);
+        return sortedItems;
     }
 }
