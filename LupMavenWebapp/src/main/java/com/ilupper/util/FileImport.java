@@ -15,11 +15,11 @@ public class FileImport {
 		String message = null;
 		message = fileImport.importFile("importFile.txt");
 		System.out.println(message);
-		message = fileImport.importFileByLine("importFile.txt");
+		message = fileImport.importFileByReadLine("importFile.txt");
 		System.out.println(message);
 	}
 	
-	public String importFileByLine(String filename) {
+	public String importFileByReadLine(String filename) {
 		File file = new File(filename);
 		FileReader fr = null; 
 		
@@ -82,5 +82,5 @@ public class FileImport {
 		
 		return "blank";
 	}
-
+ 
 }
