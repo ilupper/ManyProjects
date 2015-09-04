@@ -1,4 +1,4 @@
-package com.ilupper.util;
+package com.ilupper.util.grid;
 
 public class GenericColumnTest {
         
