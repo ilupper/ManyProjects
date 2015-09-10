@@ -1,0 +1,38 @@
+<configuration>
+
+	<appender name="application.file" class="ch.qos.logback.core.FileAppender">
+		<param name="file" value="log/application.log" />
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="debug.file" class="ch.qos.logback.core.FileAppender">
+		<param name="file" value="log/debug.log" />
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+		<!-- <param name="append" value="false" />
+		<param name="threshold" value="debug" /> -->
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- must be after the appenders to allow for the appender-ref to pre-load first -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="application.file" />
+	</root>
+	
+	<logger name="com.ilupper" level="DEBUG">
+		<appender-ref ref="debug.file" />
+	</logger>
+
+</configuration>
