@@ -15,6 +15,9 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ilupper.domain.Passenger;
 import com.ilupper.domain.Person;
 import com.ilupper.experiment.PersonFunction;
@@ -27,6 +30,7 @@ public class GenericColumn {
 	ArrayList<Object> objectList = new ArrayList<Object>();
 
 	HashSet<Object> uniqueItems = new HashSet<Object>();
+    Logger log = LoggerFactory.getLogger(this.getClass());
     
     public GenericColumn(String filename, String dtoName) {
 
@@ -65,10 +69,6 @@ public class GenericColumn {
           
     }
 
-    public static void main(String[] args) {
-        new GenericColumn("Person.txt", "com.accenture.dojo.orgchart.Person");
-    }
-
 	public void populateDAO(ArrayList<String> data, Object obj) {
 	
 		//attempt to use reflection on Person to automate fields
@@ -91,8 +91,8 @@ public class GenericColumn {
 						if (methodField.startsWith( tempField, indexSetVerbiage ) && methodField.startsWith("set"))
 							try {
 								//debug
-								System.out.println("Method found and executing.. " + m.getName());
-								System.out.println("Field found and executing.. " + f.getName());
+								log.debug("Method found and executing.. " + m.getName());
+								log.debug("Field found and executing.. " + f.getName());
 								
 								LocalDate ld = null;Double dbl = null;char character = '?';
 								String holding = data.get(i);

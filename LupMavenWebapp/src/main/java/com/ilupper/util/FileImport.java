@@ -14,9 +14,7 @@ public class FileImport {
 		FileImport fileImport = new FileImport();
 		String message = null;
 		message = fileImport.importFile("importFile.txt");
-		System.out.println(message);
 		message = fileImport.importFileByReadLine("importFile.txt");
-		System.out.println(message);
 	}
 	
 	public String importFileByReadLine(String filename) {
