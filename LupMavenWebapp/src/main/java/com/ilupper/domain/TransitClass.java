@@ -15,17 +15,26 @@ import org.slf4j.LoggerFactory;
  * @author Yeslup
  *
  */
-public enum Transit {
+public class TransitClass {
 
-	transit;
+	private static class TransitHolder {
+		private static final TransitClass transit = new TransitClass();		
+	}
 	
 	HashSet<Train> trains;
 	HashMap<String, Station> stations;
 	
-	Logger log = LoggerFactory.getLogger(this.getClass());
+	Logger log;
+	private TransitClass() {
+	     log = LoggerFactory.getLogger(this.getClass());
+	}
+
+	public static TransitClass getInstance() {	
+		return TransitHolder.transit;
+	}
 	
 	public boolean setInitialTransit(Integer numTrains, Integer numStations) {
-		if (transit.getStations() == null) {
+		if (TransitHolder.transit.getStations() == null) {
 			trains = new HashSet<>(numTrains);
 			stations = new HashMap<>(numStations);
 		
@@ -42,12 +51,8 @@ public enum Transit {
 		return false; //already existent
 	}
 	
-	public static Transit getInstance() {	
-		return transit;
-	}
-	
 	public boolean setInitialTransit(Integer numTrains, Collection<String> stationList) {
-		if (transit.getStations() == null) {
+		if (TransitHolder.transit.getStations() == null) {
 			trains = new HashSet<>(numTrains);
 			Integer numStations = stationList.size();
 			stations = new HashMap<>(numStations);

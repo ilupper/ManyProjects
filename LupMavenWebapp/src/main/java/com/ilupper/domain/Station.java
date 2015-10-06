@@ -9,16 +9,33 @@ public class Station extends Thread {
 
 	@Override
 	public void run() {
-		
+	
+		this.simulateFiniteSystem();
+		//this.simulateRandomSystem();
+	}
+	
+	//all passengers in system are managed by the Transit domain
+	private void simulateFiniteSystem() {}
+	
+	@SuppressWarnings("unused")
+	private void simulateRandomSystem() {
+
 		//generate Passenger coming into station
-		Integer numIn = random.nextInt(1);
+		Integer numIn = random.nextInt(1), proportion = 0;
 		for (int i = 0; i < numIn; i++) {
 			//set up system where every 1/7th passenger is a senior citizen, every 1/6 is a child
 			//Passenger passenger = new Passenger.PassengerBuilder(LocalDate.now(), 's').build();
 			//Passenger passenger = PassengerFactory.getPassenger2(LocalDate.now(), 's');
 			//Passenger passenger = PassengerFactory.getPassenger(LocalDate.now(), 's');
-			Passenger passenger = PassengerFactory.getPassenger(new SeniorFactory(LocalDate.now()));
-			waiting.add(passenger);
+			proportion++;
+			if ( (proportion % 7) == 1 ) {
+				Passenger passenger = PassengerFactory.getPassenger(new SeniorFactory(LocalDate.now()));
+				waiting.add(passenger);
+			}
+			else {
+				Passenger passenger2 = PassengerFactory.getPassenger(new AdultFactory(LocalDate.now()));
+				waiting.add(passenger2);
+			}
 		}
 		
 		//generate Passenger leaving station
@@ -26,12 +43,7 @@ public class Station extends Thread {
 		for (int i = 0; i < numOut; i++) {
 			waiting.poll(); //doesn't throw exception if empty
 		}
-		
-	}
 	
-	public void letStationKnow(Train train) {
-		Boarding out = new Boarding(train, false);
-		out.start();
 	}
 	
 	public void receivePassengersOffTrain(Passenger e) {

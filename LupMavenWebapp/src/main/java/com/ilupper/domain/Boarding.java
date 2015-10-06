@@ -22,14 +22,14 @@ public class Boarding extends Thread {
 	public void run() {
 		if (onOff == true) {
 			// take Passengers on train
-			station = train.getStationLock(3, onOff);
+			station = train.getDoor().getDoorLock(train.stationStay/2, onOff);
 			Integer numIn = random.nextInt(9);
 			for (int j = 0; j < numIn; j++) {
 				traveling.add(station.notePassengersBoardingTrain());
 			}
 		} else {
 			// take Passengers off train
-			station = train.getStationLock(2, onOff);
+			station = train.getDoor().getDoorLock(train.stationStay/2, onOff);
 			Integer numOut = random.nextInt(9);
 			for (int k = 0; k < numOut; k++) {
 				station.receivePassengersOffTrain(traveling.poll()); // doesn't
