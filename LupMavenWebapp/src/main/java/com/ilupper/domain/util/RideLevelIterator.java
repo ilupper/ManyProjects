@@ -15,7 +15,7 @@ public class RideLevelIterator implements Iterator<Passenger> {
 	public boolean hasNext() {
 
 		while (i.hasNext()) {
-			Passenger p = i.next();
+			p = i.next();
 			if (p.getRideLevel() == 's')
 				return true;
 		}
@@ -26,13 +26,21 @@ public class RideLevelIterator implements Iterator<Passenger> {
 	@Override
 	public Passenger next() {
 		
-		p = i.next();
-		if (p.getRideLevel() == 's') {
-			return p;
+		if (p != null) 
+			return swapPassenger(p);
+		else {
+			p = i.next();
+			return swapPassenger(p);
 		}
-		else 
-			return null;
-		
+	}
+	
+	private Passenger swapPassenger(Passenger p) {
+		if (p.getRideLevel() == 's') {
+			Passenger returnedPassenger = p;
+			p = null;
+			return returnedPassenger;	
+		}
+		else return null;
 	}
 
 	/**
@@ -43,9 +51,4 @@ public class RideLevelIterator implements Iterator<Passenger> {
 		i.remove();
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
