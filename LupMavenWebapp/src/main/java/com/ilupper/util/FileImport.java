@@ -9,13 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileImport {
-
-	public static void main(String[] args) {
-		FileImport fileImport = new FileImport();
-		String message = null;
-		message = fileImport.importFile("importFile.txt");
-		message = fileImport.importFileByReadLine("importFile.txt");
-	}
 	
 	public String importFileByReadLine(String filename) {
 		File file = new File(filename);
