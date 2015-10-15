@@ -49,7 +49,7 @@ public class SimpleService {
 			totalStation += station.getWaiting().size();
 		}
 
-		log.warn("Number onboard trains is " + totalTrain + " in a set of " + trains.size() + " train(s) \n"
+		log.info("Number onboard trains is " + totalTrain + " in a set of " + trains.size() + " train(s) \n"
 				+ "Number waiting on platform is " + totalStation + " in a set of " + stations.size() + " station(s)");
 		return "Number onboard trains is " + totalTrain + " in a set of " + trains.size() + " train(s) \n"
 				+ "Number waiting on platform is " + totalStation + " in a set of " + stations.size() + " station(s)";

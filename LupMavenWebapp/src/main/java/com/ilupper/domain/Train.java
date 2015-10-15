@@ -8,6 +8,9 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ilupper.domain.util.RideLevelIterator;
 
 public class Train extends Thread {
@@ -30,8 +33,10 @@ public class Train extends Thread {
 
 			// train arrives
 			stationStay = 2;
+			log.debug("Number of Passengers before Boarding: " + this.traveling.toString());
 			station = Transit.getInstance().getStationLock("Station " + 0, stationStay);
 			door.commenceDisEmbark(this);
+			log.debug("Number of Passengers after Boarding: " + this.traveling.toString());
 		}
 	}
 
@@ -51,6 +56,8 @@ public class Train extends Thread {
 	Station station;
 	Random random;
 	Queue<Passenger> traveling;
+	
+	Logger log;
 
 	/**
 	 * Assume a train of a) 1 door (fits only 1 person at a time)
@@ -59,6 +66,8 @@ public class Train extends Thread {
 	 * entry)
 	 */
 	public Train() {
+		log = LoggerFactory.getLogger(this.getClass());
+		
 		this.door = new Door();
 		this.random = new Random();
 		this.traveling = new LinkedList<>();

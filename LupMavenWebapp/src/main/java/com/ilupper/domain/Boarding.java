@@ -9,11 +9,9 @@ public class Boarding extends Thread {
 	public Boarding(Train train, boolean onOff) {
 		this.onOff = onOff;
 		this.random = new Random();
-		this.traveling = train.traveling;
 		this.train = train;
 	}
 	
-	Queue<Passenger> traveling;
 	Random random;
 	Station station;
 	Train train;
@@ -25,14 +23,16 @@ public class Boarding extends Thread {
 			station = train.getDoor().getDoorLock(train.stationStay/2, onOff);
 			Integer numIn = random.nextInt(9);
 			for (int j = 0; j < numIn; j++) {
-				traveling.add(station.notePassengersBoardingTrain());
+				Passenger passenger = station.notePassengersBoardingTrain();
+				if (null != passenger)
+					train.traveling.add(passenger);
 			}
 		} else {
 			// take Passengers off train
 			station = train.getDoor().getDoorLock(train.stationStay/2, onOff);
 			Integer numOut = random.nextInt(9);
 			for (int k = 0; k < numOut; k++) {
-				station.receivePassengersOffTrain(traveling.poll()); // doesn't
+				station.receivePassengersOffTrain(train.traveling.poll()); // doesn't
 																		// throw
 																		// exception
 																		// if
