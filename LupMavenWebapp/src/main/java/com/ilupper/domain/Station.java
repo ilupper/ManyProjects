@@ -35,12 +35,12 @@ public class Station extends Thread {
 			log.debug("Number of Waiting before Entering: " + this.waiting.toString());
 			
 			if (prefill != null) {
-				//this.simulateFiniteLeakDetection();
-				log.info("Finite system");
-				this.simulateFiniteSystem();
+				log.debug("Finite system");
+				this.simulateFiniteLeakDetection();
+				//this.simulateFiniteSystem();
 			}
 			else {
-				log.info("Random system");
+				log.debug("Random system");
 				this.simulateRandomSystem();
 			}
 			
